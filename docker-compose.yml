@@ -1,0 +1,25 @@
+version: '3.3'
+services:
+  angler-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      # - ./data:/usr/src/app/data  # Maps your data directory to the container
+      # - ./server:/usr/src/app/server  # Maps your server directory
+      - ./angler.db:/usr/src/app/server/angler.db  # Maps your SQLite database file
+    ports:
+      - "5003:5003"  # Maps port 5003 on the host to the same port in the container
+    environment:
+      - NODE_ENV=production
+    command: npm run start  # Adjust if your start command differs
+    develop:
+      watch:
+        - action: sync
+          path: ./server
+          target: /usr/src/app/server
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json
+      
